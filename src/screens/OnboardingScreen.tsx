@@ -1,7 +1,8 @@
+import React from 'react';
+
 import AppButton from '@/components/AppButton';
 import AppScreen from '@/components/AppScreen';
 import { OnboardingScreenProps } from '@/types/navigation';
-import React from 'react';
 
 const OnboardingScreen = ({ navigation }: OnboardingScreenProps) => {
   return (
