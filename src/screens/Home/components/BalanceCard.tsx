@@ -1,0 +1,31 @@
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+
+import AppText from '@/components/AppText';
+import { theme } from '@/theme';
+import { formatMoney } from '@/utils/money';
+
+const BalanceCard = () => {
+  return (
+    <View>
+      <AppText style={styles.balanceLabel}>رصيدك الحالي</AppText>
+      <AppText style={styles.balance} weight="bold">
+        {formatMoney(55685)}
+      </AppText>
+    </View>
+  );
+};
+
+export default BalanceCard;
+
+const styles = StyleSheet.create({
+  balanceLabel: {
+    ...theme.typography.caption,
+    color: theme.colors.text.secondary,
+    textAlign: 'center',
+  },
+  balance: {
+    ...theme.typography.h1,
+    textAlign: 'center',
+  },
+});

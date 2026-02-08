@@ -1,4 +1,4 @@
-package com.talagty
+package com.spendy
 
 import android.app.Application
 import com.facebook.react.PackageList
