@@ -28,7 +28,12 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
   };
   return (
     <AppScreen>
-      <AppHeader title="محفظتي" leftIcon="home" rightIcon="menu" />
+      <AppHeader
+        title="محفظتي"
+        leftIcon="home"
+        rightIcon="menu"
+        testID="home-screen-header"
+      />
       <AppBody containerStyle={styles.body}>
         <BalanceCard />
         <MonthlyChart goToInsights={goToInsights} />

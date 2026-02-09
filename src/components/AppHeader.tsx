@@ -12,6 +12,7 @@ interface AppHeaderProps {
   rightIcon?: string;
   onLeftPress?: () => void;
   onRightPress?: () => void;
+  testID?: string;
 }
 const AppHeader = ({
   title,
@@ -19,9 +20,10 @@ const AppHeader = ({
   rightIcon,
   onLeftPress,
   onRightPress,
+  testID,
 }: AppHeaderProps) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID={testID}>
       <View style={styles.leftIconContainer}>
         {leftIcon && (
           <Icon
