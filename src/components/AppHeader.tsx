@@ -61,8 +61,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     height: 50,
-    backgroundColor: theme.colors.surface,
-    ...theme.shadows.small,
   },
   leftIconContainer: {
     flex: 1,

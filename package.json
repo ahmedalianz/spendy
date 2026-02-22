@@ -19,7 +19,7 @@
     "react-native": "0.83.1",
     "react-native-date-picker": "^5.0.13",
     "react-native-gesture-handler": "^2.30.0",
-    "react-native-gifted-charts": "^1.4.70",
+    "react-native-gifted-charts": "^1.4.74",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-mmkv": "^4.1.1",
     "react-native-nitro-modules": "^0.33.2",
