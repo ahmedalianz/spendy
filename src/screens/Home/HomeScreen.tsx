@@ -7,6 +7,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import AddTransactionSheet from './components/AddTransactionSheet';
 import BalanceCard from './components/BalanceCard';
 import BudgetOverview from './components/BudgetOverview';
+import EmptyHomeScreen from './components/EmptyHomeScreen';
 import MonthlyChart from './components/MonthlyChart';
 import TransactionsPreview from './components/TransactionsPreview';
 
@@ -26,6 +27,18 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
   const goToTransactions = () => {
     navigation.navigate('Transactions');
   };
+  const balance = 55685;
+  const transactions = [
+    { value: 15 },
+    { value: 30 },
+    { value: 50 },
+    { value: 605 },
+    { value: 260 },
+    { value: 40 },
+    { value: 250 },
+    { value: 1200 },
+    { value: 450 },
+  ];
   return (
     <AppScreen>
       <AppHeader
@@ -35,10 +48,19 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
         testID="home-screen-header"
       />
       <AppBody containerStyle={styles.body}>
-        <BalanceCard />
-        <MonthlyChart goToInsights={goToInsights} />
-        <TransactionsPreview goToTransactions={goToTransactions} />
-        <BudgetOverview />
+        <BalanceCard balance={balance} />
+        {transactions.length > 0 ? (
+          <>
+            <MonthlyChart
+              goToInsights={goToInsights}
+              transactions={transactions}
+            />
+            <TransactionsPreview goToTransactions={goToTransactions} />
+            <BudgetOverview />
+          </>
+        ) : (
+          <EmptyHomeScreen />
+        )}
       </AppBody>
 
       <AppButton

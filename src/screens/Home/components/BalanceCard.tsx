@@ -4,13 +4,15 @@ import { StyleSheet, View } from 'react-native';
 import AppText from '@/components/AppText';
 import { theme } from '@/theme';
 import { formatMoney } from '@/utils/money';
-
-const BalanceCard = () => {
+interface BalanceCardProps {
+  balance: number;
+}
+const BalanceCard = ({ balance }: BalanceCardProps) => {
   return (
     <View>
       <AppText style={styles.balanceLabel}>رصيدك الحالي</AppText>
       <AppText style={styles.balance} weight="bold">
-        {formatMoney(55685)}
+        {formatMoney(balance)}
       </AppText>
     </View>
   );

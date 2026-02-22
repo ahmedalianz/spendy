@@ -11,8 +11,9 @@ import { formatMoney } from '@/utils/money';
 const WIDTH = Dimensions.get('window').width;
 interface MonthlyChartProps {
   goToInsights: () => void;
+  transactions: { value: number }[];
 }
-const MonthlyChart = ({ goToInsights }: MonthlyChartProps) => {
+const MonthlyChart = ({ goToInsights, transactions }: MonthlyChartProps) => {
   return (
     <View style={styles.chartCardContainer}>
       <View style={styles.chartHeader}>
@@ -30,19 +31,7 @@ const MonthlyChart = ({ goToInsights }: MonthlyChartProps) => {
       </View>
       <View style={styles.chart}>
         <LineChart
-          data={[
-            { value: 15 },
-            { value: 30 },
-            { value: 50 },
-            { value: 605 },
-            { value: 260 },
-            { value: 40 },
-            { value: 250 },
-            { value: 1200 },
-            { value: 450 },
-          ]
-            .slice()
-            .reverse()}
+          data={transactions.slice().reverse()}
           curved
           areaChart
           startFillColor={theme.colors.primary}
