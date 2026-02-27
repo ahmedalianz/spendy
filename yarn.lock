@@ -3605,10 +3605,10 @@ get-symbol-description@^1.1.0:
     es-errors "^1.3.0"
     get-intrinsic "^1.2.6"
 
-gifted-charts-core@0.1.72:
-  version "0.1.72"
-  resolved "https://registry.yarnpkg.com/gifted-charts-core/-/gifted-charts-core-0.1.72.tgz#5712fcf95837af7f9bc59e77363ed4d53d8b6143"
-  integrity sha512-ID98gSvYA/6Egg/SxjjVAnFMpK0c4H9NZKkF4vRWtvJOioWegEGlQKN7BcQhuyKHr/HPmz7kGID3XJUuoM7UTQ==
+gifted-charts-core@0.1.78:
+  version "0.1.78"
+  resolved "https://registry.yarnpkg.com/gifted-charts-core/-/gifted-charts-core-0.1.78.tgz#6c8ec1476a36c1b83c2f5ca323b38217c092658a"
+  integrity sha512-IR8DXaNHbuV76cfO4ZpDUFZJ1+q4SJXoCFtKPJ5CIZnYZRmWGAdKAhUqlpKwXUzTSETza1GKDbJli2CVCXOKeg==
 
 glob-parent@^5.1.2:
   version "5.1.2"
@@ -5254,12 +5254,12 @@ react-native-gesture-handler@^2.30.0:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
 
-react-native-gifted-charts@^1.4.70:
-  version "1.4.70"
-  resolved "https://registry.yarnpkg.com/react-native-gifted-charts/-/react-native-gifted-charts-1.4.70.tgz#439d56d48c16577dbd45cec47f2486da8cfbdcec"
-  integrity sha512-nsbth3aMeMwu40ZNAn512TGZLks5Untplby5ABSe22+FLUdXYkdCzeR5/CodL6gxCcpsqQYXgAVvtujZnDRErA==
+react-native-gifted-charts@^1.4.74:
+  version "1.4.74"
+  resolved "https://registry.yarnpkg.com/react-native-gifted-charts/-/react-native-gifted-charts-1.4.74.tgz#19a256e088e1665a5e8c7b09a861b54888bc5396"
+  integrity sha512-HaTH/sIj7NBR/yOyQkzLjuikwQQW9srUXHpmJ4FARWOp+qUGX5KYyyc1cnxQQyLio+P8Sw8e6ME/LJsvVqmFQA==
   dependencies:
-    gifted-charts-core "0.1.72"
+    gifted-charts-core "0.1.78"
 
 react-native-is-edge-to-edge@1.2.1:
   version "1.2.1"

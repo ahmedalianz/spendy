@@ -13,6 +13,8 @@ const colors = {
   // Backgrounds
   background: '#F9FAFB',
   backgroundLight: '#f6f6f8',
+  backgroundLighter: '#EEF3FF',
+  backgroundLightest: '#F2F6FF',
   backgroundDark: '#111621',
   surface: '#FFFFFF',
   // Text
@@ -28,6 +30,7 @@ const colors = {
     subtle: '#f3f4f6',
     light: '#E5E7EB',
     medium: '#D1D5DB',
+    strong: '#DDE8FF',
     dark: '#9CA3AF',
   },
   semantic: {

@@ -1,4 +1,3 @@
-// utils/amount.ts
 export const toEnglishDigits = (input: string) =>
   input.replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
 

@@ -4,30 +4,18 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import AppText from '@/components/AppText';
+import { PreviewTransaction } from '@/store/finance/types';
 import { theme } from '@/theme';
 import { formatMoney } from '@/utils/money';
 interface TransactionsPreview {
   goToTransactions: () => void;
+  previewTransactions: PreviewTransaction[];
 }
-const mockTransactionsData = [
-  {
-    label: 'مطعم البيتزا',
-    spent: 250,
-    icon: 'restaurant',
-  },
-  {
-    label: 'تذكرة طيران',
-    spent: 1200,
-    icon: 'airplane',
-  },
-  {
-    label: 'ملابس جديدة',
-    spent: 450,
-    icon: 'shirt',
-  },
-];
 
-const TransactionsPreview = ({ goToTransactions }: TransactionsPreview) => {
+const TransactionsPreview = ({
+  goToTransactions,
+  previewTransactions,
+}: TransactionsPreview) => {
   return (
     <View style={styles.transactionsContainer}>
       <View style={styles.transactionsHeader}>
@@ -45,12 +33,12 @@ const TransactionsPreview = ({ goToTransactions }: TransactionsPreview) => {
         </View>
       </View>
       <ScrollView contentContainerStyle={styles.transactionsList}>
-        {mockTransactionsData.map((item, index) => (
+        {previewTransactions.map((item, index) => (
           <View
-            key={item.label}
+            key={item.id}
             style={[
               styles.transactionItem,
-              index !== mockTransactionsData.length - 1 &&
+              index !== previewTransactions.length - 1 &&
                 styles.transactionItemBorder,
             ]}
           >
@@ -61,7 +49,7 @@ const TransactionsPreview = ({ goToTransactions }: TransactionsPreview) => {
               <AppText weight="bold">{item.label}</AppText>
             </View>
             <AppText style={styles.transactionItemAmount} weight="bold">
-              {formatMoney(item.spent)}
+              {formatMoney(item.amount)}
             </AppText>
           </View>
         ))}
