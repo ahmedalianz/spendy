@@ -8,112 +8,66 @@ import AppHeader from '@/components/AppHeader';
 import AppScreen from '@/components/AppScreen';
 import AppText from '@/components/AppText';
 import EmptyState from '@/components/EmptyState';
-import { selectByType, selectMonthly } from '@/store/finance/selectors';
+import {
+  selectAllTransactions,
+  selectByType,
+  selectMonthly,
+} from '@/store/finance/selectors';
 import { TransactionType } from '@/store/finance/types';
+import type { AllTransaction } from '@/store/finance/types'; // ✅ عدّل المسار حسب مكان type
 import { useFinanceStore } from '@/store/finance/useFinanceStore';
 import { theme } from '@/theme';
 import { TransactionsScreenProps } from '@/types/navigation';
 import { formatMoney } from '@/utils/money';
 
-type FilterKey = 'ALL' | TransactionType; // 'ALL' | 'EXPENSE' | 'INCOME' ... حسب تعريفك
+type FilterKey = 'ALL' | TransactionType;
 
-type TxTypeUi = 'expense' | 'income';
-
-type TxRow = {
-  id: string;
-  title: string;
-  category: string;
-  icon: string;
-  type: TxTypeUi;
-  amount: number;
-  timeLabel: string;
-  dateGroup: string; // "النهارده" | "امبارح" | "الأقدم"
-};
-
-const FILTERS: { key: FilterKey; label: string; icon: string }[] = [
+export const FILTERS: { key: FilterKey; label: string; icon: string }[] = [
   { key: 'ALL', label: 'الكل', icon: 'apps-outline' },
-  // عدّل TransactionType keys هنا لو بتاعتك مختلفة
-  {
-    key: 'EXPENSE' as TransactionType,
-    label: 'مصروفات',
-    icon: 'arrow-down-outline',
-  },
-  { key: 'INCOME' as TransactionType, label: 'دخل', icon: 'arrow-up-outline' },
+  { key: 'EXPENSE', label: 'مصروفات', icon: 'arrow-down-outline' },
+  { key: 'INCOME', label: 'دخل', icon: 'arrow-up-outline' },
 ];
 
-function startOfDay(d: Date) {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
+function groupByDateGroup(rows: AllTransaction[]) {
+  const order: AllTransaction['dateGroup'][] = [
+    'النهارده',
+    'امبارح',
+    'قبل كدا',
+  ];
 
-function toDateGroup(date: Date) {
-  const today = startOfDay(new Date()).getTime();
-  const that = startOfDay(date).getTime();
-  const diffDays = Math.round((today - that) / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return 'النهارده';
-  if (diffDays === 1) return 'امبارح';
-  return 'الأقدم';
-}
-
-function formatTimeLabel(date: Date) {
-  return date.toLocaleTimeString('ar-EG', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-function groupByDateGroup(rows: TxRow[]) {
-  const order = ['النهارده', 'امبارح', 'الأقدم'];
-
-  const map = new Map<string, TxRow[]>();
+  const map = new Map<string, AllTransaction[]>();
   rows.forEach(r => {
     const arr = map.get(r.dateGroup) ?? [];
     arr.push(r);
     map.set(r.dateGroup, arr);
   });
 
-  // حافظ على ترتيب ثابت + رتب جوا كل جروب بالأحدث
   return order
     .filter(k => map.has(k))
-    .map(title => {
-      const data = (map.get(title) ?? []).slice();
-      // لو عندك createdAt في الأصل هنرتب قبل ما نعمل map، لكن هنا نكتفي بالترتيب الحالي
-      return { title, data };
-    });
+    .map(title => ({
+      title,
+      data: (map.get(title) ?? [])
+        .slice()
+        .sort((a, b) => b.sortTime - a.sortTime),
+    }));
 }
 
 const TransactionsScreen = ({ navigation }: TransactionsScreenProps) => {
   const [filter, setFilter] = useState<FilterKey>('ALL');
 
   const transactions = useFinanceStore(s => s.transactions);
-  const { monthly, totalExpense } = selectMonthly(transactions);
+  const { selectedTransactions, totalExpense } = useMemo(
+    () => selectMonthly(transactions),
+    [transactions],
+  );
 
-  const uiRows = useMemo<TxRow[]>(() => {
-    // 1) فلترة حسب النوع (ALL/EXPENSE/INCOME)
-    const filtered = selectByType(monthly, filter);
+  const uiRows = useMemo<AllTransaction[]>(() => {
+    const filtered = selectByType(selectedTransactions, filter);
 
-    // 2) map لواجهة المستخدم
-    return (filtered ?? []).map((t: any) => {
-      const createdAt = t.createdAt ? new Date(t.createdAt) : new Date();
-
-      const isIncome =
-        String(t.type).toUpperCase() === 'INCOME' ||
-        String(t.transactionType).toUpperCase() === 'INCOME';
-
-      return {
-        id: String(t.id ?? t._id ?? Math.random()),
-        title: String(t.title ?? t.note ?? 'عملية'),
-        category: String(t.categoryName ?? t.category?.name ?? 'بدون تصنيف'),
-        icon: String(t.categoryIcon ?? t.category?.icon ?? 'pricetag-outline'),
-        type: isIncome ? 'income' : 'expense',
-        amount: Number(t.amount ?? 0),
-        timeLabel: formatTimeLabel(createdAt),
-        dateGroup: toDateGroup(createdAt),
-      };
-    });
-  }, [monthly, filter]);
+    return selectAllTransactions(filtered).sort(
+      (a, b) => b.sortTime - a.sortTime,
+    );
+  }, [selectedTransactions, filter]);
 
   const grouped = useMemo(() => groupByDateGroup(uiRows), [uiRows]);
 
@@ -135,7 +89,6 @@ const TransactionsScreen = ({ navigation }: TransactionsScreenProps) => {
               {formatMoney(totalExpense ?? 0)}
             </AppText>
 
-            {/* دلوقتي ثابتة.. بعدين اربطها مقارنة حقيقية */}
             <View style={styles.summaryPill}>
               <Icon
                 name="trending-up"
@@ -166,7 +119,7 @@ const TransactionsScreen = ({ navigation }: TransactionsScreenProps) => {
             const active = f.key === filter;
             return (
               <Pressable
-                key={String(f.key)}
+                key={f.key}
                 onPress={() => setFilter(f.key)}
                 style={[styles.filterChip, active && styles.filterChipActive]}
                 accessibilityRole="button"
@@ -210,7 +163,7 @@ const TransactionsScreen = ({ navigation }: TransactionsScreenProps) => {
               <View style={styles.listCard}>
                 {section.data.map((tx, idx) => {
                   const isLast = idx === section.data.length - 1;
-                  const isIncome = tx.type === 'income';
+                  const isIncome = tx.type === 'INCOME';
 
                   const amountColor = isIncome
                     ? theme.colors.semantic.success
@@ -224,16 +177,17 @@ const TransactionsScreen = ({ navigation }: TransactionsScreenProps) => {
                       <View style={styles.rowLeft}>
                         <View style={styles.iconCircle}>
                           <Icon
-                            name={tx.icon as any}
+                            name={tx.icon}
                             size={18}
                             color={theme.colors.primary}
                           />
                         </View>
 
                         <View style={styles.rowText}>
-                          <AppText weight="bold">{tx.title}</AppText>
+                          <AppText weight="bold">{tx.label}</AppText>
+
                           <AppText style={styles.metaText}>
-                            {tx.timeLabel} • {tx.category}
+                            {tx.timeLabel} • {tx.category?.name ?? 'بدون تصنيف'}
                           </AppText>
                         </View>
                       </View>
@@ -304,7 +258,6 @@ const styles = StyleSheet.create({
     ...theme.typography.small,
     color: theme.colors.text.secondary,
   },
-
   summaryLink: {
     alignSelf: 'flex-start',
     flexDirection: 'row',

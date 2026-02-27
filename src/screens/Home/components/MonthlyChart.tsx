@@ -11,9 +11,14 @@ import { formatMoney } from '@/utils/money';
 const WIDTH = Dimensions.get('window').width;
 interface MonthlyChartProps {
   goToInsights: () => void;
-  transactions: { value: number }[];
+  totalExpense: number;
+  chartPoints: { value: number }[];
 }
-const MonthlyChart = ({ goToInsights, transactions }: MonthlyChartProps) => {
+const MonthlyChart = ({
+  goToInsights,
+  totalExpense,
+  chartPoints,
+}: MonthlyChartProps) => {
   return (
     <View style={styles.chartCardContainer}>
       <View style={styles.chartHeader}>
@@ -31,7 +36,7 @@ const MonthlyChart = ({ goToInsights, transactions }: MonthlyChartProps) => {
       </View>
       <View style={styles.chart}>
         <LineChart
-          data={transactions.slice().reverse()}
+          data={chartPoints}
           curved
           areaChart
           startFillColor={theme.colors.primary}
@@ -39,13 +44,18 @@ const MonthlyChart = ({ goToInsights, transactions }: MonthlyChartProps) => {
           endFillColor={theme.colors.primary}
           endOpacity={0.01}
           color={theme.colors.primary}
+          dataPointsColor={theme.colors.primary}
           thickness={3}
-          hideDataPoints
-          yAxisThickness={0}
-          xAxisThickness={0}
-          hideAxesAndRules
           yAxisSide={yAxisSides.RIGHT}
           width={WIDTH - theme.spacing.xxl}
+          hideAxesAndRules={false}
+          yAxisThickness={0}
+          xAxisThickness={0}
+          showDataPointLabelOnFocus
+          dataPointsHeight={8}
+          dataPointsWidth={8}
+          textFontSize={10}
+          textColor={theme.colors.text.secondary}
         />
       </View>
 
@@ -55,7 +65,7 @@ const MonthlyChart = ({ goToInsights, transactions }: MonthlyChartProps) => {
             اجمالي المصاريف
           </AppText>
           <AppText style={styles.chartFooterAmount} weight="bold">
-            {formatMoney(10300)}
+            {formatMoney(totalExpense)}
           </AppText>
         </View>
         <AppButton
@@ -112,6 +122,7 @@ const styles = StyleSheet.create({
     height: 210,
     marginVertical: theme.spacing.lg,
     overflow: 'hidden',
+    transform: [{ scaleX: -1 }],
   },
   chartFooter: {
     flexDirection: 'row',

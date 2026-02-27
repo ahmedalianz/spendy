@@ -8,6 +8,7 @@ import { PickerMode } from './types';
 
 import AppText from '@/components/AppText';
 import { theme } from '@/theme';
+import { formatTimeLabel } from '@/utils/dates';
 
 type DateInputProps = {
   selectedDate: Date;
@@ -46,12 +47,7 @@ const DateInput = ({ selectedDate, setSelectedDate }: DateInputProps) => {
         activeOpacity={0.85}
       >
         <Icon name="time-outline" size={16} color={theme.colors.primary} />
-        <AppText style={styles.text}>
-          {selectedDate.toLocaleTimeString('ar-EG', {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </AppText>
+        <AppText style={styles.text}>{formatTimeLabel(selectedDate)}</AppText>
       </TouchableOpacity>
 
       <DatePicker
@@ -63,8 +59,8 @@ const DateInput = ({ selectedDate, setSelectedDate }: DateInputProps) => {
         confirmText="تأكيد"
         cancelText="إلغاء"
         onConfirm={d => {
-          setOpen(false);
           setSelectedDate(d);
+          setOpen(false);
         }}
         onCancel={() => setOpen(false)}
         theme="light"

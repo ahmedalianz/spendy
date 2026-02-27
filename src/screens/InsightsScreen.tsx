@@ -9,12 +9,12 @@ import AppHeader from '@/components/AppHeader';
 import AppScreen from '@/components/AppScreen';
 import AppText from '@/components/AppText';
 import EmptyState from '@/components/EmptyState';
+import { Period } from '@/constants';
+import { selectByPeriod } from '@/store/finance/selectors';
 import { useFinanceStore } from '@/store/finance/useFinanceStore';
 import { theme } from '@/theme';
 import { InsightsScreenProps } from '@/types/navigation';
 import { formatMoney } from '@/utils/money';
-
-type Period = 'week' | 'month' | 'year';
 
 const PERIODS: { key: Period; label: string }[] = [
   { key: 'week', label: 'أسبوع' },
@@ -68,16 +68,21 @@ function clamp01(n: number) {
 
 const InsightsScreen = ({ navigation }: InsightsScreenProps) => {
   const [period, setPeriod] = useState<Period>('month');
-
+  const transactions = useFinanceStore(s => s.transactions);
+  const { avg, totalExpense, selectedTransactions } = selectByPeriod(
+    transactions,
+    period,
+  );
   const totals = useMemo(() => {
-    // TODO later: compute based on real transactions + period
-    const spent = 3450;
-    const avg = 3280;
+    const spent = totalExpense ?? 0;
     const delta = avg === 0 ? 0 : (spent - avg) / avg;
     return { spent, avg, delta };
-  }, [period]);
-  const transactions = useFinanceStore(s => s.transactions);
-  const hasTransactions = transactions.length > 0;
+  }, [totalExpense, avg]);
+  const hasTransactions = selectedTransactions.length > 0;
+  const deltaColor =
+    totals.delta >= 0
+      ? theme.colors.semantic.danger
+      : theme.colors.semantic.success;
 
   return (
     <AppScreen>
@@ -134,19 +139,13 @@ const InsightsScreen = ({ navigation }: InsightsScreenProps) => {
                 <Icon
                   name={totals.delta >= 0 ? 'trending-up' : 'trending-down'}
                   size={14}
-                  color={
-                    totals.delta >= 0
-                      ? theme.colors.semantic.warning
-                      : theme.colors.semantic.success
-                  }
+                  color={deltaColor}
                 />
                 <AppText style={styles.deltaText} weight="bold">
                   {(Math.abs(totals.delta) * 100).toFixed(1)}%
                 </AppText>
               </View>
             </View>
-
-            <AppText style={styles.subText}>مقارنة بمتوسط آخر 3 شهور</AppText>
           </View>
 
           {/* Smart insight */}
@@ -334,7 +333,6 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.border.subtle,
   },
   deltaText: { ...theme.typography.small, color: theme.colors.text.secondary },
-  subText: { ...theme.typography.caption, color: theme.colors.text.secondary },
 
   smartCard: { gap: theme.spacing.md },
   smartHeader: {

@@ -30,3 +30,4 @@ export const INCOME_CATEGORIES = [
   { id: 2, name: 'مكافأة', icon: 'trophy' },
   { id: 3, name: 'استثمار', icon: 'trending-up' },
 ];
+export type Period = 'week' | 'month' | 'year';

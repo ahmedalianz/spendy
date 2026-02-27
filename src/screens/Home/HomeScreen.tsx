@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React, { use, useMemo, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 
 import BottomSheet from '@gorhom/bottom-sheet';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import AddTransactionSheet from './components/AddTransactionSheet';
 import BalanceCard from './components/BalanceCard';
@@ -16,20 +16,27 @@ import AppButton from '@/components/AppButton';
 import AppHeader from '@/components/AppHeader';
 import AppScreen from '@/components/AppScreen';
 import AppText from '@/components/AppText';
-import { selectMonthly } from '@/store/finance/selectors';
+import { selectMonthly, selectPreview } from '@/store/finance/selectors';
 import { useFinanceStore } from '@/store/finance/useFinanceStore';
 import { theme } from '@/theme';
 import { HomeScreenProps } from '@/types/navigation';
 
 const HomeScreen = ({ navigation }: HomeScreenProps) => {
-  const { bottom } = useSafeAreaInsets();
+  const height = useBottomTabBarHeight();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const openAddSheet = () => bottomSheetRef.current?.expand();
 
   const addTransaction = useFinanceStore(s => s.addTransaction);
   const transactions = useFinanceStore(s => s.transactions);
   const hasHydrated = useFinanceStore(s => s.hasHydrated);
-  const { chartPoints, totalExpense } = selectMonthly(transactions);
+  const { net, totalExpense, chartPoints } = useMemo(
+    () => selectMonthly(transactions),
+    [transactions],
+  );
+  const previewTransactions = useMemo(
+    () => selectPreview(transactions),
+    [transactions],
+  );
 
   const goToInsights = () => {
     navigation.navigate('Insights');
@@ -46,15 +53,19 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           <AppText>تحميل</AppText>
         ) : (
           <>
-            <BalanceCard balance={totalExpense} />
+            <BalanceCard balance={net} />
             {transactions.length > 0 ? (
               <>
                 <MonthlyChart
                   goToInsights={goToInsights}
-                  transactions={chartPoints}
+                  totalExpense={totalExpense}
+                  chartPoints={chartPoints}
                 />
-                <TransactionsPreview goToTransactions={goToTransactions} />
-                <BudgetOverview />
+                <TransactionsPreview
+                  goToTransactions={goToTransactions}
+                  previewTransactions={previewTransactions}
+                />
+                {/* <BudgetOverview /> */}
               </>
             ) : (
               <EmptyHomeScreen onAddExpense={openAddSheet} />
@@ -62,16 +73,19 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           </>
         )}
       </AppBody>
-
-      <AppButton
-        title="+"
-        onPress={openAddSheet}
-        style={[styles.addExpenseButton, { bottom }]}
-        textStyle={theme.typography.h1}
-        accessibilityLabel="إضافة مصروف جديد"
-        accessibilityHint="يفتح نموذج لإضافة مصروف جديد"
-      />
-      <AddTransactionSheet ref={bottomSheetRef} onSubmit={addTransaction} />
+      {hasHydrated && (
+        <>
+          <AppButton
+            title="+"
+            onPress={openAddSheet}
+            style={[styles.addExpenseButton, { bottom: height }]}
+            textStyle={theme.typography.h1}
+            accessibilityLabel="إضافة مصروف جديد"
+            accessibilityHint="يفتح نموذج لإضافة مصروف جديد"
+          />
+          <AddTransactionSheet ref={bottomSheetRef} onSubmit={addTransaction} />
+        </>
+      )}
     </AppScreen>
   );
 };

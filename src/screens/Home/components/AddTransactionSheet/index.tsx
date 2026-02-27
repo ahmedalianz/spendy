@@ -74,7 +74,6 @@ const AddTransactionSheet = forwardRef<BottomSheet, AddTransactionSheetProps>(
       close();
       reset();
     };
-
     return (
       <AppSheet ref={ref} snapPoints={['82%']}>
         <View style={styles.topRow}>
@@ -84,6 +83,14 @@ const AddTransactionSheet = forwardRef<BottomSheet, AddTransactionSheetProps>(
             style={styles.closeBtn}
             textStyle={styles.closeBtnText}
             accessibilityLabel="إغلاق"
+          />
+          <AppButton
+            title="اضافة"
+            onPress={submit}
+            disabled={!canSubmit}
+            style={styles.primaryCta}
+            accessibilityLabel="تسجيل الحركة"
+            accessibilityHint="يحفظ المصروف أو الدخل"
           />
         </View>
 
@@ -104,15 +111,6 @@ const AddTransactionSheet = forwardRef<BottomSheet, AddTransactionSheetProps>(
           setSelectedCategory={setCategoryId}
           categories={categories}
         />
-
-        <AppButton
-          title="تسجيل"
-          onPress={submit}
-          disabled={!canSubmit}
-          style={styles.primaryCta}
-          accessibilityLabel="تسجيل الحركة"
-          accessibilityHint="يحفظ المصروف أو الدخل"
-        />
       </AppSheet>
     );
   },
@@ -124,6 +122,7 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: theme.spacing.sm,
   },
   closeBtn: {
