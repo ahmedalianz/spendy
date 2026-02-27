@@ -11,3 +11,5 @@ export const formatMoney = (amount: number): string => {
   }
   return moneyFormatter.format(amount);
 };
+export const uid = () =>
+  `${Date.now()}_${Math.random().toString(16).substring(2)}`;

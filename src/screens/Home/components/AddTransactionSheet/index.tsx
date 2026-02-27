@@ -14,8 +14,10 @@ import AppSheet from '@/components/AppSheet';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/constants';
 import { theme } from '@/theme';
 import { amountToNumber } from '@/utils/amount';
+import { uid } from '@/utils/money';
 
 export type AddTransactionPayload = {
+  id: string;
   type: 'EXPENSE' | 'INCOME';
   amount: number;
   categoryId: number;
@@ -65,6 +67,7 @@ const AddTransactionSheet = forwardRef<BottomSheet, AddTransactionSheetProps>(
       if (!canSubmit) return;
 
       onSubmit({
+        id: uid(),
         type: type === TRANSACTION_TYPES.INCOME ? 'INCOME' : 'EXPENSE',
         amount: value,
         categoryId,
