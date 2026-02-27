@@ -1,4 +1,4 @@
-import React, { use, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -65,7 +65,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
                   goToTransactions={goToTransactions}
                   previewTransactions={previewTransactions}
                 />
-                {/* <BudgetOverview /> */}
+                <BudgetOverview />
               </>
             ) : (
               <EmptyHomeScreen onAddExpense={openAddSheet} />
